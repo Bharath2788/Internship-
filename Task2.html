@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Styling and JavaScript</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background: #f5f5f5;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 1rem;
+    }
+    .container {
+      padding: 20px;
+    }
+    .carousel {
+      width: 80%;
+      max-width: 500px;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .carousel img {
+      width: 100%;
+      display: none;
+    }
+    .carousel img.active {
+      display: block;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #333;
+      color: white;
+      cursor: pointer;
+    }
+    .quiz {
+      margin-top: 20px;
+    }
+    .quiz button {
+      background: #0077cc;
+    }
+    .api-data {
+      margin-top: 20px;
+      font-size: 18px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    @media (max-width: 768px) {
+      body {
+        background: #e6f7ff;
+      }
+      header {
+        font-size: 18px;
+      }
+      button {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Advanced Styling and JavaScript</h1>
+  </header>
+  <div class="container">
+    <h2>Image Carousel</h2>
+    <div class="carousel">
+      <img src="https://picsum.photos/id/237/600/400" class="active">
+      <img src="https://picsum.photos/id/238/600/400">
+      <img src="https://picsum.photos/id/239/600/400">
+    </div>
+    <button onclick="prevImage()">Prev</button>
+    <button onclick="nextImage()">Next</button>
+
+    <div class="quiz">
+      <h2>Quick Quiz</h2>
+      <p id="question">What is 2 + 2?</p>
+      <button onclick="checkAnswer(3)">3</button>
+      <button onclick="checkAnswer(4)">4</button>
+      <button onclick="checkAnswer(5)">5</button>
+      <p id="result"></p>
+    </div>
+
+    <h2>API Data</h2>
+    <button onclick="fetchJoke()">Get Random Joke</button>
+    <div class="api-data" id="joke"></div>
+  </div>
+
+  <script>
+    let images = document.querySelectorAll(".carousel img");
+    let index = 0;
+    function showImage(i) {
+      images.forEach(img => img.classList.remove("active"));
+      images[i].classList.add("active");
+    }
+    function prevImage() {
+      index = (index - 1 + images.length) % images.length;
+      showImage(index);
+    }
+    function nextImage() {
+      index = (index + 1) % images.length;
+      showImage(index);
+    }
+
+    function checkAnswer(answer) {
+      let result = document.getElementById("result");
+      if (answer === 4) result.textContent = "Correct!";
+      else result.textContent = "Wrong, try again!";
+    }
+
+    async function fetchJoke() {
+      let res = await fetch("https://official-joke-api.appspot.com/random_joke");
+      let data = await res.json();
+      document.getElementById("joke").textContent = data.setup + " - " + data.punchline;
+    }
+  </script>
+</body>
+</html>

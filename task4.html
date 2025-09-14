@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 4 - Full Project</title>
+  <style>
+    body {font-family: Arial, sans-serif;margin: 0;padding: 0;line-height: 1.6;background: #f4f4f4;}
+    nav {background: #2c3e50;color: #fff;padding: 10px;text-align: center;}
+    nav a {color: #fff;margin: 0 15px;text-decoration: none;font-weight: bold;}
+    section {padding: 20px;}
+    h1,h2 {color: #2c3e50;}
+    .container {max-width: 900px;margin: auto;background: #fff;padding: 20px;border-radius: 8px;box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
+    .task-input {display: flex;gap: 10px;margin-bottom: 10px;}
+    .task-input input {flex: 1;padding: 8px;}
+    .task-input button {padding: 8px 15px;background: #27ae60;color: #fff;border: none;border-radius: 5px;cursor: pointer;}
+    ul {list-style: none;padding: 0;}
+    ul li {padding: 8px;background: #ecf0f1;margin-bottom: 5px;border-radius: 5px;display: flex;justify-content: space-between;}
+    .products {display: grid;grid-template-columns: repeat(auto-fit,minmax(200px,1fr));gap: 15px;margin-top: 15px;}
+    .product {border: 1px solid #ccc;padding: 10px;border-radius: 8px;background: #fff;}
+    .filters {display: flex;gap: 15px;margin-bottom: 15px;}
+    select {padding: 5px;}
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <a href="#todo">To-Do</a>
+    <a href="#products">Products</a>
+  </nav>
+
+  <section id="about">
+    <div class="container">
+      <h1>About Me</h1>
+      <p>Hello, I am Bharath. This is my portfolio showcasing skills, projects, and contact information.</p>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="container">
+      <h1>Projects</h1>
+      <p>Here are some of my recent projects built with HTML, CSS, JavaScript, and Java.</p>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <h1>Contact</h1>
+      <p>Email: bharath@example.com</p>
+    </div>
+  </section>
+
+  <section id="todo">
+    <div class="container">
+      <h2>To-Do List</h2>
+      <div class="task-input">
+        <input type="text" id="taskInput" placeholder="Enter task">
+        <button onclick="addTask()">Add</button>
+      </div>
+      <ul id="taskList"></ul>
+    </div>
+  </section>
+
+  <section id="products">
+    <div class="container">
+      <h2>Product Listing</h2>
+      <div class="filters">
+        <select id="categoryFilter" onchange="filterProducts()">
+          <option value="all">All Categories</option>
+          <option value="electronics">Electronics</option>
+          <option value="clothing">Clothing</option>
+        </select>
+        <select id="sortFilter" onchange="sortProducts()">
+          <option value="default">Sort By</option>
+          <option value="price">Price</option>
+          <option value="rating">Rating</option>
+        </select>
+      </div>
+      <div class="products" id="productList"></div>
+    </div>
+  </section>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    function renderTasks() {
+      let list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((task,i)=>{
+        let li=document.createElement("li");
+        li.textContent=task;
+        let btn=document.createElement("button");
+        btn.textContent="X";
+        btn.onclick=function(){deleteTask(i)};
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
+    function addTask() {
+      let input=document.getElementById("taskInput");
+      if(input.value.trim()!==""){
+        tasks.push(input.value);
+        localStorage.setItem("tasks",JSON.stringify(tasks));
+        input.value="";
+        renderTasks();
+      }
+    }
+    function deleteTask(i){
+      tasks.splice(i,1);
+      localStorage.setItem("tasks",JSON.stringify(tasks));
+      renderTasks();
+    }
+    renderTasks();
+
+    const products=[
+      {name:"Smartphone",category:"electronics",price:500,rating:4.5},
+      {name:"Laptop",category:"electronics",price:1000,rating:4.7},
+      {name:"T-Shirt",category:"clothing",price:20,rating:4.2},
+      {name:"Jeans",category:"clothing",price:40,rating:4.3}
+    ];
+    function renderProducts(list){
+      let container=document.getElementById("productList");
+      container.innerHTML="";
+      list.forEach(p=>{
+        let div=document.createElement("div");
+        div.className="product";
+        div.innerHTML=`<h3>${p.name}</h3><p>Category: ${p.category}</p><p>Price: $${p.price}</p><p>Rating: ${p.rating}</p>`;
+        container.appendChild(div);
+      });
+    }
+    function filterProducts(){
+      let cat=document.getElementById("categoryFilter").value;
+      let filtered=cat==="all"?products:products.filter(p=>p.category===cat);
+      renderProducts(filtered);
+    }
+    function sortProducts(){
+      let type=document.getElementById("sortFilter").value;
+      let sorted=[...products];
+      if(type==="price")sorted.sort((a,b)=>a.price-b.price);
+      if(type==="rating")sorted.sort((a,b)=>b.rating-a.rating);
+      renderProducts(sorted);
+    }
+    renderProducts(products);
+  </script>
+</body>
+</html>
